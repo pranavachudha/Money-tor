@@ -45,7 +45,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //DELETE an expense
-router.delete('/:d', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         await Expense.findByIdAndDelete(req.params.id);
         res.json({ message: 'Expense Deleted'});

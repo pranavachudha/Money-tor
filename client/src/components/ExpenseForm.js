@@ -1,15 +1,31 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-function ExpenseForm({ onAddExpense }) {
+function ExpenseForm({ onAddExpense, onUpdateExpense, editingExpense }) {
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
     const [date, setDate] = useState('');
 
+    useEffect(() => {
+        if (editingExpense) {
+            setCategory(editingExpense.category);
+            setDescription(editingExpense.description);
+            setAmount(editingExpense.amount);
+            setDate(editingExpense.date.slice(0, 10));
+        }
+
+        else {
+            setCategory('');
+            setDescription('');
+            setAmount('');
+            setDate('');
+        }
+    }, [editingExpense]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
     
-        const newExpense = { 
+        const expenseData = { 
             category: category, 
             description: description, 
             amount: amount, 
@@ -17,26 +33,40 @@ function ExpenseForm({ onAddExpense }) {
         };
 
         try {
-            const response = await fetch('http://localhost:5000/api/expenses', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newExpense),
-            });
 
-            const data = await response.json();
-            onAddExpense(data);
+            if (editingExpense) {
+                const response = await fetch(`http://localhost:5000/api/expenses/${editingExpense._id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json'},
+                    body: JSON.stringify(expenseData)
+                })
+
+                const updatedData = await response.json();
+                onUpdateExpense(updatedData);
+            } else {
+                const response = await fetch('http://localhost:5000/api/expenses', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(expenseData),
+                });
+
+                const data = await response.json();
+                onAddExpense(data);
+
+            }
 
             setCategory('');
             setDescription('');
             setAmount('');
             setDate('');
+
         } catch (err) {
             console.error('Error adding expense:', err);
         }
     };
     return (
         <div className="card p-4 mb-4">
-            <h4 className="mb-3">Add New Expense</h4>
+            <h4 className="mb-3">{editingExpense? 'Edit Expense' : 'Add New Expense'}</h4>
             <form onSubmit={handleSubmit} >
                 <div className = "mb-3">
                     <label className="form-label">Category</label>
@@ -84,7 +114,10 @@ function ExpenseForm({ onAddExpense }) {
                     />
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100">Add Expense</button>
+                <button type="submit" className="btn btn-primary w-100">
+                    {editingExpense? 'Add Edited Expense' : 'Add Expense'}
+                </button>
+                
             </form>
         </div>
     )

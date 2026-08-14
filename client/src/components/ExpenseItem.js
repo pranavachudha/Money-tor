@@ -1,4 +1,4 @@
-function ExpenseItem({expense, onDelete}) {
+function ExpenseItem({expense, onDelete, onEdit}) {
     return (
         <div className="card mb-2 p-3 d-flex flex-row justify-content-between align-items-center">
             <div>
@@ -14,6 +14,11 @@ function ExpenseItem({expense, onDelete}) {
                         onClick={() => onDelete(expense._id)}
                     >
                         Delete
+                    </button>
+                    <button 
+                        className="btn btn-sm btn-primary"
+                        onClick = {() => onEdit(expense)}>
+                        Edit
                     </button>
                 </div>
             </div>

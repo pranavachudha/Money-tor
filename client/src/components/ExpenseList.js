@@ -1,6 +1,6 @@
 import ExpenseItem from "./ExpenseItem";
 
-function ExpenseList({expenses, onDelete}) {
+function ExpenseList({expenses, onDelete, onEdit}) {
     if (expenses.length === 0) {
         return <p className="text-center text-muted">No Expenses yet. Add one Above!</p>
     }
@@ -15,6 +15,7 @@ function ExpenseList({expenses, onDelete}) {
                     key={expense._id}
                     expense={expense}
                     onDelete={onDelete}
+                    onEdit={onEdit}
                 />
             })}
             <div className="text-end mt-3">

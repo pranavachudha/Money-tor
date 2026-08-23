@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const Expense = require('../models/Expense');
+const auth = require('../middleware/auth');
 
 // GET all expenses
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     try {
-        const expenses = await Expense.find();
+        const expenses = await Expense.find({ user: req.user.id });
         res.json(expenses);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -13,12 +14,13 @@ router.get('/', async (req, res) => {
 });
 
 // POST a new expense
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const expense = new Expense({
         category: req.body.category,
         description: req.body.description,
         amount: req.body.amount,
         date: req.body.date,
+        user: req.user.id,
     });
 
     try {
@@ -30,8 +32,14 @@ router.post('/', async (req, res) => {
 });
 
 // PUT update an expense 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     try {
+        const expense = await Expense.findOne({_id: req.params.id, user: req.user.id })
+
+        if (!expense) {
+            return res.status(404).json({message: 'Expense Not found'});
+        }
+
         const updatedExpense = await Expense.findByIdAndUpdate(
             req.params.id,
             req.body,
@@ -45,9 +53,14 @@ router.put('/:id', async (req, res) => {
 });
 
 //DELETE an expense
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     try {
-        await Expense.findByIdAndDelete(req.params.id);
+        await Expense.findByIdAndDelete({ _id: req.params.id, user: req.user.id });
+
+        if (!expense) {
+            return res.status(404).json({ message: 'Expense not found'});
+        }
+        
         res.json({ message: 'Expense Deleted'});
     } catch (err) {
         res.status(500).json({ message: err.message });

@@ -1,0 +1,98 @@
+import { useState } from 'react';
+import { useNavigate, Link} from 'react-router-dom';
+
+function Register(){
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.prevenDefault();
+        setError(null);
+
+        try {
+            const response = await fetch("http://localhost:5000/api/auth/register", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, email, password}),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.message);
+                return;
+            }
+            
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            navigate('/dashboard');
+        } catch (err) {
+            setError('Something went wrong. Please try again.');
+        }
+    };
+
+    return (
+        <div className="container mt-5">
+            <div className="row justify-content-center">
+                <div className="col-md-5">
+                    <div className="card p-4">
+                        <h3 className="text-center mb-4">Create Account</h3>
+
+                        {error && (
+                            <div className="alert alert-danger">{error}</div>
+                        )}
+
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-3">
+                                <label className='form-label'>Name</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label className='form-label'>Email</label>
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label className='form-label'>Password</label>
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <button type='submit' className='btn btn-primary w-100'>
+                                Register
+                            </button>
+                        </form>
+
+                        <p className='text-center mt-3'>
+                            Already have an account? <Link to="/login">Login</Link>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+}
+
+export default Register;

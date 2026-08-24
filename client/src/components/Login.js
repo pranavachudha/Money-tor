@@ -8,7 +8,9 @@ function Login(){
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-
+        e.preventDefault();
+        setError(null);
+        
         try {
             const response = await fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
@@ -17,6 +19,9 @@ function Login(){
             });
 
             const data = await response.json();
+
+            console.log("Response Status:", response.status);
+            console.log("Response Data", data);
 
             if (!response.ok) {
                 setError(data.message);
@@ -28,6 +33,7 @@ function Login(){
             navigate('/dashboard');
 
         } catch(err) {
+            console.log("Full error:", err);
             setError('Something went wrong. Please try again');
         }
     };

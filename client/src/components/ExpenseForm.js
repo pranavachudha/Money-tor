@@ -33,11 +33,14 @@ function ExpenseForm({ onAddExpense, onUpdateExpense, editingExpense }) {
         };
 
         try {
-
+            const token = localStorage.getItem('token')
             if (editingExpense) {
                 const response = await fetch(`http://localhost:5000/api/expenses/${editingExpense._id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json'},
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify(expenseData)
                 })
 
@@ -46,7 +49,10 @@ function ExpenseForm({ onAddExpense, onUpdateExpense, editingExpense }) {
             } else {
                 const response = await fetch('http://localhost:5000/api/expenses', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify(expenseData),
                 });
 

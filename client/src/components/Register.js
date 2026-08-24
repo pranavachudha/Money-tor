@@ -9,7 +9,7 @@ function Register(){
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        e.prevenDefault();
+        e.preventDefault();
         setError(null);
 
         try {

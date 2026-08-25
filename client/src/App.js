@@ -1,22 +1,51 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate} from 'react-router-dom'
 import ExpenseForm from './components/ExpenseForm'
 import ExpenseList from './components/ExpenseList'
 import Login from './components/Login'
 import Register from './components/Register'
 import PrivateRoute from './components/PrivateRoute'
+import NavBar from './components/NavBar'
+import Statistics from './components/Statistics'
 
-function Dashboard(){
+function Dashboard(props){
+    return (
+        <div className="container mt-4">
+
+            <ExpenseForm 
+                onAddExpense={props.addExpense}
+                onUpdateExpense={props.updateExpense}
+                editingExpense={props.editingExpense}
+            />
+            
+            { props.loading ? 
+            <div className="text-center mt-5">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            :
+            <ExpenseList 
+                expenses={props.expenses} 
+                onDelete={props.deleteExpense} 
+                onEdit={props.setEditingExpense}
+            />
+            }
+        </div>
+    )
+}
+
+function App() {
     const [expenses, setExpenses] = useState([]);
     const [editingExpense, setEditingExpense] = useState(null);
     const [loading, setLoading] = useState(true);
-    const user = JSON.parse(localStorage.getItem('user'));
-    const navigate = useNavigate();
-
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem("token");
+                if (!token)
+                    return;
                 const response = await fetch("http://localhost:5000/api/expenses", {
                     headers: {'Authorization':`Bearer ${token}`}
                 });
@@ -32,6 +61,8 @@ function Dashboard(){
         fetchData();
         
     }, []);
+
+
 
 
     const addExpense = (newExpense) => {
@@ -59,49 +90,6 @@ function Dashboard(){
         }
     }
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
-    }
-
-    return (
-        <div className="container mt-4">
-            <div className="app-header d-flex justify-content-between align-items-center">
-                <h1>Expense Tracker</h1>
-                <div className="d-flex align-items-center gap-3">
-                    <span className="welcome-text">Welcome, {user?.name}!</span>
-                    <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>
-                    Logout
-                    </button>
-                </div>
-            </div>
-                
-            
-            <ExpenseForm 
-                onAddExpense={addExpense}
-                onUpdateExpense={updateExpense}
-                editingExpense={editingExpense}
-            />
-            
-            { loading ? 
-            <div className="text-center mt-5">
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </div>
-            </div>
-            :
-            <ExpenseList 
-                expenses={expenses} 
-                onDelete={deleteExpense} 
-                onEdit={setEditingExpense}
-            />
-            }
-        </div>
-    )
-}
-
-function App() {
     return (
         <BrowserRouter>
             <Routes>
@@ -109,7 +97,22 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/dashboard" element={
                     <PrivateRoute>
-                        <Dashboard />
+                        <NavBar />
+                        <Dashboard 
+                            expenses={expenses} 
+                            editingExpense={editingExpense}
+                            setEditingExpense={setEditingExpense}
+                            addExpense={addExpense}
+                            deleteExpense={deleteExpense}
+                            loading={loading}
+                            updateExpense={updateExpense}
+                        />
+                    </PrivateRoute>
+                } />
+                <Route path="/statistics" element={
+                    <PrivateRoute>
+                        <NavBar />
+                        <Statistics expenses={expenses}/>
                     </PrivateRoute>
                 } />
                 <Route path="/" element={<Navigate to="/login" />} />

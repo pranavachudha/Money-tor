@@ -211,3 +211,7 @@ a:hover {
   color: #555870;
   margin-bottom: 14px;
 }
+
+html {
+  overflow-y: scroll;
+}

@@ -7,6 +7,7 @@ import Register from './components/Register'
 import PrivateRoute from './components/PrivateRoute'
 import NavBar from './components/NavBar'
 import Statistics from './components/Statistics'
+import Profile from './components/Profile'
 
 function Dashboard(props){
     return (
@@ -113,6 +114,13 @@ function App() {
                     <PrivateRoute>
                         <NavBar />
                         <Statistics expenses={expenses}/>
+                    </PrivateRoute>
+                } />
+
+                <Route path="/profile" element={
+                    <PrivateRoute>
+                        <NavBar />
+                        <Profile />
                     </PrivateRoute>
                 } />
                 <Route path="/" element={<Navigate to="/login" />} />

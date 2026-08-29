@@ -18,7 +18,7 @@ function ExpenseList({ expenses, onDelete, onEdit }) {
           onEdit={onEdit}
         />
       ))}
-      <div className="total-bar">
+      <div className="total-bar mb-2">
         Total: <span>₹{total}</span>
       </div>
     </div>

@@ -8,7 +8,7 @@
 body {
   background-color: #0f1117;
   color: #e8e0d0;
-  font-family: 'Segoe UI', sans-serif;
+    font-family: 'Inter', Times, serif;
   min-height: 100vh;
 }
 
@@ -101,6 +101,7 @@ body {
   font-weight: 600;
   color: #e8e0d0;
   letter-spacing: 0.5px;
+  font-family: 'Times New Roman';
 }
 
 .welcome-text {

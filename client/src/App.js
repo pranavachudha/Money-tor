@@ -10,6 +10,34 @@ import Statistics from './components/Statistics'
 import Profile from './components/Profile'
 
 function Dashboard(props){
+        const [fetchError, setFetchError] = useState(false);
+
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const token = localStorage.getItem("token");
+                    if (!token){
+                        return;
+                    }
+                    props.setLoading(true);
+                    const response = await fetch("http://localhost:5000/api/expenses", {
+                        headers: {'Authorization':`Bearer ${token}`}
+                    });
+                    const data = await response.json();
+                    props.setExpenses(data);
+                    props.setLoading(false);
+                } catch (err) {
+                    console.log("Error in Initial Fetch:", err);
+                    setFetchError(true);
+                    props.setLoading(false);
+                    props.setExpenses([]);
+                }
+            }
+
+            fetchData();
+        
+        }, []);
+
     return (
         <div className="container mt-4">
 
@@ -19,19 +47,25 @@ function Dashboard(props){
                 editingExpense={props.editingExpense}
             />
             
-            { props.loading ? 
-            <div className="text-center mt-5">
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
+            {props.loading ? (
+                <div className="text-center mt-5">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
                 </div>
-            </div>
-            :
-            <ExpenseList 
-                expenses={props.expenses} 
-                onDelete={props.deleteExpense} 
-                onEdit={props.setEditingExpense}
-            />
-            }
+            ) : (
+                fetchError ? (
+                    <div className="alert alert-danger mt-3">
+                        Could not connect to server. Please try again later.
+                    </div>
+                ) : (
+                    <ExpenseList 
+                        expenses={props.expenses} 
+                        onDelete={props.deleteExpense} 
+                        onEdit={props.setEditingExpense}
+                    />
+                )
+            )}
         </div>
     )
 }
@@ -39,32 +73,7 @@ function Dashboard(props){
 function App() {
     const [expenses, setExpenses] = useState([]);
     const [editingExpense, setEditingExpense] = useState(null);
-    const [loading, setLoading] = useState(true);
-    
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                if (!token)
-                    return;
-                const response = await fetch("http://localhost:5000/api/expenses", {
-                    headers: {'Authorization':`Bearer ${token}`}
-                });
-                const data = await response.json();
-                setExpenses(data);
-                setLoading(false);
-            } catch (err) {
-                console.log("Error in Initial Fetch:", err);
-                setLoading(false);
-            }
-        }
-
-        fetchData();
-        
-    }, []);
-
-
-
+    const [loading, setLoading] = useState(false);
 
     const addExpense = (newExpense) => {
         setExpenses([...expenses, newExpense]);
@@ -96,10 +105,11 @@ function App() {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/dashboard" element={
+                
+                    <Route path="/dashboard" element={
                     <PrivateRoute>
                         <NavBar />
-                        <Dashboard 
+                         <Dashboard 
                             expenses={expenses} 
                             editingExpense={editingExpense}
                             setEditingExpense={setEditingExpense}
@@ -107,9 +117,12 @@ function App() {
                             deleteExpense={deleteExpense}
                             loading={loading}
                             updateExpense={updateExpense}
+                            setLoading={setLoading}
+                            setExpenses={setExpenses}
                         />
                     </PrivateRoute>
                 } />
+                
                 <Route path="/statistics" element={
                     <PrivateRoute>
                         <NavBar />

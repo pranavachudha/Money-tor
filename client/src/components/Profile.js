@@ -7,48 +7,42 @@ function Profile() {
     const user = JSON.parse(localStorage.getItem('user'));
     return (
         <div className='container'>
-            <div className='row'>
-                <div className='card col-3'>
-                    <ButtonGroup vertical>
-                    <Button>Button</Button>
-                    <Button>Button</Button>
-
-                    <DropdownButton
-                        as={ButtonGroup}
-                        title="Dropdown"
-                        id="bg-vertical-dropdown-1"
-                    >
-                        <Dropdown.Item eventKey="1">Dropdown link</Dropdown.Item>
-                        <Dropdown.Item eventKey="2">Dropdown link</Dropdown.Item>
-                    </DropdownButton>
-
-                    <Button>Button</Button>
-                    <Button>Button</Button>
-
-                    <DropdownButton
-                        as={ButtonGroup}
-                        title="Dropdown"
-                        id="bg-vertical-dropdown-2"
-                    >
-                        <Dropdown.Item eventKey="1">Dropdown link</Dropdown.Item>
-                        <Dropdown.Item eventKey="2">Dropdown link</Dropdown.Item>
-                    </DropdownButton>
-
-                    <DropdownButton
-                        as={ButtonGroup}
-                        title="Dropdown"
-                        id="bg-vertical-dropdown-3"
-                    >
-                        <Dropdown.Item eventKey="1">Dropdown link</Dropdown.Item>
-                        <Dropdown.Item eventKey="2">Dropdown link</Dropdown.Item>
-                    </DropdownButton>
-                    </ButtonGroup>
+            <div className='row g-2'>
+                <div className='col-3'>
+                    <div className='card p-3 mt-3'>
+                        <ButtonGroup vertical >
+                            <Button className='mb-2'>Account Details</Button>
+                            <Button className='mb-2'>Investment</Button>
+                            <Button className='mb-2'>Debts</Button>
+                            <Button className='mb-2'>Button</Button>
+                        </ButtonGroup>
+                    </div>
                 </div>
-                <div className='card col-9'><p>hello</p></div>
-            </div>
-            
 
-            
+                <div className="col-9">
+                    <div className='card p-3 mt-3'>
+                        <h2 className="ms-2 mb-3">Account Details</h2>
+                        <div className="card p-3">
+                            <div className='d-flex justify-content-between'>
+                                <h4 className='d-inline'>User Details</h4>
+                                <button className='btn btn-outline-danger btn-sm d-inline pe-3 ps-3'>Edit</button>
+                            </div>
+                            <p className="mt-1 mb-2 text-muted">User Name: {user?.name}</p>
+                            <p className="text-muted mb-2">Mail Id: {user?.email}</p>
+                            <p className="text-muted mb-2">Gross Monthly Income: 0</p>
+                            <p className="text-muted mb-1">Budget allocation: 0</p>
+                            
+                            
+                        </div>
+                        {/* <div className="card p-3 mt-2">
+                            <h4>Investment Details</h4>
+                            <p className="mt-1 mb-2 text-muted">User Name: {user?.name}</p>
+                            <p className="text-muted">Mail Id: {user?.email}</p>
+                        </div> */}
+
+                    </div>
+                </div>
+            </div>
         </div>
     );
 

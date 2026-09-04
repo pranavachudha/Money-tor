@@ -6,7 +6,7 @@ import logo from '/home/pranav/Documents/Expense Tracker/client/src/components/l
 
 function NavBar() {
 
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = localStorage.getItem('user');
     const navigate = useNavigate();
 
     const handleLogout = () => {

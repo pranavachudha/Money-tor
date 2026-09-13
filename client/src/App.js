@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate} from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import ExpenseForm from './components/ExpenseForm'
 import ExpenseList from './components/ExpenseList'
 import Login from './components/Login'
@@ -11,6 +11,7 @@ import Profile from './components/Profile'
 
 function Dashboard(props){
         const [fetchError, setFetchError] = useState(false);
+        const navigate = useNavigate();
 
         useEffect(() => {
             const fetchData = async () => {
@@ -24,6 +25,14 @@ function Dashboard(props){
                         headers: {'Authorization':`Bearer ${token}`}
                     });
                     const data = await response.json();
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        navigate('/login');
+                        return
+                    }
+
                     props.setExpenses(data);
                     props.setLoading(false);
                 } catch (err) {
@@ -74,6 +83,7 @@ function App() {
     const [expenses, setExpenses] = useState([]);
     const [editingExpense, setEditingExpense] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
 
     const addExpense = (newExpense) => {
         setExpenses([...expenses, newExpense]);
@@ -108,7 +118,7 @@ function App() {
                 
                     <Route path="/dashboard" element={
                     <PrivateRoute>
-                        <NavBar />
+                        <NavBar user={user} />
                          <Dashboard 
                             expenses={expenses} 
                             editingExpense={editingExpense}
@@ -125,15 +135,15 @@ function App() {
                 
                 <Route path="/statistics" element={
                     <PrivateRoute>
-                        <NavBar />
+                        <NavBar user={user} />
                         <Statistics expenses={expenses}/>
                     </PrivateRoute>
                 } />
 
                 <Route path="/profile" element={
                     <PrivateRoute>
-                        <NavBar />
-                        <Profile />
+                        <NavBar user={user} />
+                        <Profile user={user} setUser={setUser} />
                     </PrivateRoute>
                 } />
                 <Route path="/" element={<Navigate to="/login" />} />

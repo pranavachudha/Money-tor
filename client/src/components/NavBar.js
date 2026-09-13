@@ -4,9 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
 import logo from '/home/pranav/Documents/Expense Tracker/client/src/components/logo.png'
 
-function NavBar() {
-
-    const user = localStorage.getItem('user');
+function NavBar({ user }) {
     const navigate = useNavigate();
 
     const handleLogout = () => {

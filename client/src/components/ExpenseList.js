@@ -5,6 +5,7 @@ function ExpenseList({ expenses, onDelete, onEdit }) {
     return <p className="empty-state">No expenses yet. Add one above!</p>;
   }
 
+  console.log(expenses)
   const total = expenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
 
   return (

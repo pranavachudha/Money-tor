@@ -48,7 +48,7 @@ body {
 
 /* Primary Button */
 .btn-primary {
-  background-color: #3d5a80 !important;
+  background-color: #2b455a !important;
   border: none !important;
   border-radius: 8px !important;
   padding: 10px !important;
@@ -215,4 +215,8 @@ a:hover {
 
 html {
   overflow-y: scroll;
+}
+
+.card-light {
+  background-color: #5b6577 !important;
 }

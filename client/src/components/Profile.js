@@ -69,6 +69,10 @@ function Profile({user, setUser}) {
         setSection(e.target.value);
     }
 
+    const handleInvestSections = () => {
+        return;
+    }
+
     return (
         <div className='container'>
             <div className='row g-2'>
@@ -174,74 +178,28 @@ function Profile({user, setUser}) {
                 }
 
                  {section === 'Investments' &&
-                (!editingForm?
+                
                     (<div className="col-9">
                         <div className='card p-3 mt-3'>
                             <h2 className="ms-2 mb-3">Investments</h2>
-                            <div className="card p-3">
-                                <div className='d-flex justify-content-between'>
-                                    <h4 className='d-inline'>User Details</h4>
-                                    <button className='btn btn-outline-danger btn-sm d-inline pe-3 ps-3'
-                                    onClick={handleEdit}>
-                                        Edit
-                                    </button>
+                            <div className="card p-3 card-light">
+                                <div className='d-inline-flex p-2 bd-highlight'>
+                                
+                                    <Button className='me-2 p-2 btn'
+                                    value="Stocks"
+                                    onClick={handleInvestSections}>
+                                        Stocks and ETFs
+                                    </Button>
+                                
+                                    <Button className='me-2 p-2 btn'
+                                    value="MFs"
+                                    onClick={handleInvestSections}>
+                                        Mutual Funds
+                                    </Button>
                                 </div>
-                                <p className="mt-1 mb-2 text-muted">User Name: {user?.name}</p>
-                                <p className="text-muted mb-2">Mail Id: {user?.email}</p>
-                                <p className="text-muted mb-2">Gross Monthly Income: {gmi}</p>
-                                <p className="text-muted mb-1">Budget allocation: {budget}</p>
                             </div>
                         </div>
                     </div>) 
-                :
-                    (
-                        <div className="col-9">
-                            <div className='card p-3 mt-3'>
-                                <h2 className="ms-2 mb-3">Editing Account Details</h2>
-                                <form onSubmit={handleSubmit} >
-                                    <div className = "mb-3">
-                                        <label className="form-label">User Name</label>
-                                        <input
-                                            type = "text"
-                                            className = "form-control"
-                                            placeholder = "e.g, John, Sarah"
-                                            value = {updatedUserName}
-                                            onChange = {(e) => setUpdatedUserName(e.target.value)}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className = "mb-3">
-                                        <label className="form-label">Gross Montly Income</label>
-                                        <input
-                                            type = "Number"
-                                            className = "form-control"
-                                            placeholder = "e.g, 25000, 50000"
-                                            value = {gmi}
-                                            onChange = {(e) => setGMI(e.target.value)}
-                                        />
-                                    </div>
-
-                                    <div className = "mb-3">
-                                        <label className="form-label">Budget</label>
-                                        <input
-                                            type = "number"
-                                            className = "form-control"
-                                            value = {budget}
-                                            onChange = {(e) => setBudget(e.target.value)}
-                                            placeholder = "e.g, 250, 500"
-                                            required
-                                        />
-                                    </div>
-
-                                    <button type="submit" className="btn btn-primary w-100">
-                                        Submit
-                                    </button>
-                                    
-                                </form>
-                            </div>
-                        </div>
-                    ))
                 }
 
             </div>

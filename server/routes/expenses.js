@@ -55,7 +55,7 @@ router.put('/:id', auth, async (req, res) => {
 //DELETE an expense
 router.delete('/:id', auth, async (req, res) => {
     try {
-        await Expense.findByIdAndDelete({ _id: req.params.id, user: req.user.id });
+        const expense = await Expense.findByIdAndDelete({ _id: req.params.id, user: req.user.id });
 
         if (!expense) {
             return res.status(404).json({ message: 'Expense not found'});

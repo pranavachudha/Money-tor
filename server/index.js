@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 const expenseRoutes = require('./routes/expenses');
 const authRoutes = require('./routes/auth');
 const financeRoutes = require('./routes/finance');
-
-
+const stockRoutes = require('./routes/stocks');
+const mutualfundRoutes = require('./routes/mutualfunds');
 dotenv.config();
 
 const app = express();
@@ -16,6 +16,8 @@ app.use(cors());
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/finance', financeRoutes);
+app.use('/api/stocks', stockRoutes);
+app.use('/api/mutualfunds', mutualfundRoutes);
 
 //Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)

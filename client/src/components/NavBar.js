@@ -2,7 +2,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate, Link } from 'react-router-dom';
-import logo from '/home/pranav/Documents/Expense Tracker/client/src/components/logo.png'
+import logo from '/home/pranav/Documents/Money-tor/client/src/components/logo.png'
 
 function NavBar({ user }) {
     const navigate = useNavigate();

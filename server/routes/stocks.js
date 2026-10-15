@@ -14,6 +14,18 @@ router.get('/', auth, async (req, res) => {
     }
 })
 
+//GET suggestions for the query from Yahoo! finance
+router.get('/search', auth, async (req, res) => {
+    try {
+        const query = req.query.q;
+        const response = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=${query}&lang=en-US`);
+        const data = await response.json();
+        res.json(data.quotes);
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+})
+
 //POST a new stock
 router.post('/', auth, async (req, res) => {
     const stock = new Stock({

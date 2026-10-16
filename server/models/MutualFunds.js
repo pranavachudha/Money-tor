@@ -31,7 +31,10 @@ const MutualFundsSchema = new mongoose.Schema({
         type: Number,
         required: false,
     },
-
+    schemeCode: {
+        type: Number,
+        required: false,
+    }
 });
 
 module.exports = mongoose.model('MutualFunds', MutualFundsSchema);

@@ -1,5 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import StockSearch from './StockSearch';
+import MutualFundSearch from './MutualFundSearch';
 import { useEffect, useState } from 'react';
 
 
@@ -10,6 +12,7 @@ function Profile({user, setUser}) {
     const [gmi, setGMI] = useState('0');
     const [budget, setBudget] = useState('0');
     const [section, setSection] = useState('AccountDetails');
+    const [investSection, setInvestSection] = useState('');
 
     useEffect(() => {
         const setVariables = async () => {
@@ -69,8 +72,8 @@ function Profile({user, setUser}) {
         setSection(e.target.value);
     }
 
-    const handleInvestSections = () => {
-        return;
+    const handleInvestSections = (e) => {
+        setInvestSection(e.target.value);
     }
 
     return (
@@ -177,7 +180,7 @@ function Profile({user, setUser}) {
                     ))
                 }
 
-                 {section === 'Investments' &&
+                {section === 'Investments' &&
                 
                     (<div className="col-9">
                         <div className='card p-3 mt-3'>
@@ -199,8 +202,21 @@ function Profile({user, setUser}) {
                                 </div>
                             </div>
                         </div>
-                    </div>) 
+
+                    {investSection === 'Stocks'? 
+                        <StockSearch />
+                        : <></>
+                    }
+
+                    {investSection === 'MFs'? 
+                        <MutualFundSearch />
+                        : <></>
+                    }
+
+                    </div>)
+                    
                 }
+
 
             </div>
         </div>

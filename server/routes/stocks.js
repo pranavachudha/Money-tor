@@ -28,17 +28,27 @@ router.get('/search', auth, async (req, res) => {
 
 //POST a new stock
 router.post('/', auth, async (req, res) => {
-    const stock = new Stock({
-        user: req.user.id,
-        name: req.body.name,
-        quantity: req.body.quantity,
-        avgPrice: req.body.avgPrice,
-        sipEnabled: req.body.sipEnabled,
-        sipAmount: req.body.sipAmount,
-        sipDate: req.body.sipDate,
-    });
 
     try {
+        const existing = await Stock.findOne({ 
+            user: req.user.id, 
+            name: req.body.name 
+        });
+
+        if (existing) {
+            return res.status(400).json({ message: 'Stock already exists in your portfolio' });
+        }
+
+        const stock = new Stock({
+            user: req.user.id,
+            name: req.body.name,
+            quantity: req.body.quantity,
+            avgPrice: req.body.avgPrice,
+            sipEnabled: req.body.sipEnabled,
+            sipAmount: req.body.sipAmount,
+            sipDate: req.body.sipDate,
+        });
+        
         const newStock = await stock.save();
         res.status(201).json(newStock);
     } catch (err) {

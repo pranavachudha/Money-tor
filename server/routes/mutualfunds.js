@@ -15,20 +15,31 @@ router.get("/", auth, async (req, res) => {
 
 //POST Mutual Fund
 router.post("/", auth, async (req, res) => {
-    const MF = new MutualFund({
-        user: req.user.id,
-        name: req.body.name,
-        units: req.body.units,
-        sipAmount: req.body.sipAmount,
-        sipEnabled: req.body.sipEnabled,
-        sipDate: req.body.sipDate,
-    })
-
     try {
+        const existing = await MutualFund.findOne({ 
+            user: req.user.id, 
+            name: req.body.name 
+        });
+
+        if (existing) {
+            return res.status(400).json({ message: 'Mutual Fund already exists in your portfolio' });
+        }
+
+        const MF = new MutualFund({
+            user: req.user.id,
+            name: req.body.name,
+            schemeCode: req.body.schemeCode,
+            units: req.body.units,
+            sipAmount: req.body.sipAmount,
+            sipEnabled: req.body.sipEnabled,
+            sipDate: req.body.sipDate,
+        });
+
         const response = await MF.save();
         res.status(201).json(response);
+
     } catch(err) {
-        res.status(400).json({message: err.message});
+        res.status(400).json({ message: err.message });
     }
 });
 

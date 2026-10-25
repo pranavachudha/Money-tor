@@ -18,14 +18,37 @@ router.get('/', auth, async (req, res) => {
 router.get('/search', auth, async (req, res) => {
     try {
         const query = req.query.q;
-        const response = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=${query}&lang=en-US`);
+        const response = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(query)}&lang=en-US`, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+        });
         const data = await response.json();
-        res.json(data.quotes);
+        res.json(data.quotes || []);
     } catch (err) {
         res.status(500).json({message: err.message});
     }
 })
 
+// GET live price for a stock
+router.get('/price/:symbol', auth, async (req, res) => {
+    try {
+        const symbol = req.params.symbol;
+        const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+        });
+        const data = await response.json();
+        const resultMeta = data.chart?.result?.[0]?.meta;
+        const price = resultMeta?.regularMarketPrice;
+        const previousClose = resultMeta?.chartPreviousClose;
+        const currency = resultMeta?.currency || 'INR';
+        res.json({ symbol, price, previousClose, currency });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 //POST a new stock
 router.post('/', auth, async (req, res) => {
 
@@ -87,7 +110,7 @@ router.delete("/:id", auth, async (req, res) => {
             return res.status(404).json({message: 'Stock not found.'});
         }
 
-        await Stock.findByIdAndDelete({ user: req.user.id});
+        await Stock.findByIdAndDelete(req.params.id);
         res.json({ message: 'Stock Deleted.'});
     } catch(err) {
         res.status(500).json({message: err.message});

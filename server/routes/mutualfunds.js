@@ -13,6 +13,22 @@ router.get("/", auth, async (req, res) => {
     }
 });
 
+// GET live NAV for a mutual fund
+router.get('/nav/:schemeCode', auth, async (req, res) => {
+    try {
+        const response = await fetch(`https://api.mfapi.in/mf/${encodeURIComponent(req.params.schemeCode)}`);
+        const data = await response.json();
+        const latestEntry = data.data?.[0];
+        const nav = latestEntry ? parseFloat(latestEntry.nav) : null;
+        const date = latestEntry ? latestEntry.date : null;
+        const fundHouse = data.meta?.fund_house;
+        const schemeName = data.meta?.scheme_name;
+        res.json({ schemeCode: req.params.schemeCode, nav, date, fundHouse, schemeName });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 //POST Mutual Fund
 router.post("/", auth, async (req, res) => {
     try {
@@ -49,7 +65,7 @@ router.put('/:id', auth, async (req, res) => {
         const MF = await MutualFund.findOne({ _id: req.params.id, user: req.user.id });
 
         if (!MF) {
-            return res.status.json({message: 'Mutual Fund is not Found.'})
+            return res.status(404).json({ message: 'Mutual Fund is not Found.' });
         }
 
         const updatedMF = await MutualFund.findByIdAndUpdate(
